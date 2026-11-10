@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --paper: #f3eee4;
+  --ink: #1c1915;
+  --moss: #1f6b4a;
+}
+
+html {
+  color-scheme: light;
+  background: var(--paper);
+}
+
+body {
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(900px 420px at 100% -10%, rgba(31, 107, 74, 0.08), transparent 55%),
+    radial-gradient(700px 380px at -10% 20%, rgba(138, 98, 50, 0.1), transparent 50%),
+    var(--paper);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  html,
+  body {
+    color-scheme: light;
+    background: #f3eee4;
+    color: #1c1915;
+  }
+}
+
+.num {
+  font-family: var(--font-display), var(--font-arabic), Georgia, serif;
+  font-feature-settings: "tnum" 1, "ss01" 1;
+  letter-spacing: -0.03em;
+}
+
+.pad-key {
+  height: 58px;
+  border-radius: 16px;
+  background: #fffdf8;
+  border: 1px solid #e4d9c6;
+  font-size: 1.35rem;
+  color: #1c1915;
+}
+
+.pad-key:active {
+  background: #e7f3ec;
+}
+
+:focus-visible {
+  outline: 2px solid #1f6b4a;
+  outline-offset: 3px;
+}
