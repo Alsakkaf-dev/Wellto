@@ -34,9 +34,13 @@ body {
 }
 
 .num {
-  font-family: var(--font-display), var(--font-arabic), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-feature-settings: "tnum" 1, "ss01" 1;
   letter-spacing: -0.03em;
+}
+
+[dir="rtl"] .num {
+  font-family: var(--font-display), var(--font-arabic), Georgia, serif;
 }
 
 .pad-key {

@@ -5,12 +5,13 @@ import { formatRm } from "@/lib/format";
 import { recentMerchants, suggestCategory } from "@/lib/money/engine";
 import type { ExpenseCategory } from "@/lib/money/types";
 import { readLocaleCookie } from "@/server/auth";
-import { dropBuyAction, prepareWorkspace, recordBuyForm } from "@/server/actions";
+import { dropBuyAction, recordBuyForm } from "@/server/actions";
+import { loadWorkspace } from "@/server/store";
 
 export const dynamic = "force-dynamic";
 
 export default async function AddPage() {
-  const state = await prepareWorkspace();
+  const state = await loadWorkspace();
   const locale = (await readLocaleCookie()) ?? state.settings.locale;
   const copy = copyOf(locale);
   const merchants = recentMerchants(state);

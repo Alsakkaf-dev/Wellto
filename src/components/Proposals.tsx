@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { copyOf, proposalLine, type Locale } from "@/lib/copy";
 import { formatRm } from "@/lib/format";
 import type { Proposal } from "@/lib/money/types";
@@ -24,10 +25,10 @@ export function Proposals({ proposals, locale }: { proposals: Proposal[]; locale
           </ul>
           <div className="mt-4 flex gap-2">
             <form action={confirmForm.bind(null, proposal.id)} className="flex-1">
-              <button className="h-12 w-full rounded-2xl bg-moss text-white">{copy.apply}</button>
+              <SubmitButton className="h-12 w-full rounded-2xl bg-moss text-white">{copy.apply}</SubmitButton>
             </form>
             <form action={dismissAction.bind(null, proposal.id)}>
-              <button className="h-12 rounded-2xl border border-line px-4 text-muted">{copy.notNow}</button>
+              <SubmitButton className="h-12 rounded-2xl border border-line px-4 text-muted">{copy.notNow}</SubmitButton>
             </form>
           </div>
         </article>

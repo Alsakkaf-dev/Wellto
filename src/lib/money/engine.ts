@@ -218,10 +218,37 @@ function anomalyLine(state: AppState, today: string, typicalCents: number): DayP
   return null;
 }
 
+function sameMorning(existing: DayPlan, plan: DayPlan): boolean {
+  return (
+    existing.target === plan.target &&
+    existing.safe === plan.safe &&
+    existing.amount === plan.amount &&
+    existing.reserve === plan.reserve &&
+    existing.alert === plan.alert &&
+    existing.forecast === plan.forecast &&
+    existing.runwayDays === plan.runwayDays &&
+    existing.typical === plan.typical &&
+    existing.mean28 === plan.mean28 &&
+    existing.mean14 === plan.mean14 &&
+    existing.blended === plan.blended &&
+    existing.learning === plan.learning &&
+    existing.carry === plan.carry &&
+    existing.inputAllowance === plan.inputAllowance &&
+    existing.inputCarryArmed === plan.inputCarryArmed &&
+    existing.anomaly === plan.anomaly &&
+    existing.toppedUp === plan.toppedUp &&
+    existing.emergencyTarget === plan.emergencyTarget &&
+    existing.purchaseFloor === plan.purchaseFloor &&
+    existing.treasuryRate === plan.treasuryRate &&
+    existing.emergencyRate === plan.emergencyRate &&
+    existing.learned === plan.learned
+  );
+}
+
 export function computeMorning(state: AppState, today: string, at: string): AppState {
+  const existing = state.plans.find((plan) => plan.date === today);
+  if (existing?.toppedUp) return state;
   const next = clone(state);
-  const existing = next.plans.find((plan) => plan.date === today);
-  if (existing?.toppedUp) return next;
   const allowance = existing ? existing.inputAllowance : next.smoothing.previousAllowance;
   const carryArmed = existing ? existing.inputCarryArmed : next.smoothing.carryArmed;
   const shot = picture(next, today);
@@ -257,6 +284,7 @@ export function computeMorning(state: AppState, today: string, at: string): AppS
     emergencyRate: shot.split.emergencyRate,
     learned: learnedCode(shot.typical),
   };
+  if (existing && sameMorning(existing, plan)) return state;
   next.plans = [plan, ...next.plans.filter((item) => item.date !== today)];
   if (!existing) {
     next.smoothing.previousAllowance = amount;

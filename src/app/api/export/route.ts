@@ -3,6 +3,7 @@ import { hasSession } from "@/server/auth";
 import { readWorkspace } from "@/server/store";
 
 export const dynamic = "force-dynamic";
+export const preferredRegion = "sin1";
 
 export async function GET() {
   if (!(await hasSession())) return NextResponse.json({ ok: false }, { status: 401 });

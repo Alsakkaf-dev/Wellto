@@ -4,12 +4,12 @@ import { healthScore } from "@/lib/money/algorithm";
 import { latestPlan, picture } from "@/lib/money/engine";
 import { klDateISO } from "@/lib/money/time";
 import { readLocaleCookie } from "@/server/auth";
-import { prepareWorkspace } from "@/server/actions";
+import { loadWorkspace } from "@/server/store";
 
 export const dynamic = "force-dynamic";
 
 export default async function InsightsPage() {
-  const state = await prepareWorkspace();
+  const state = await loadWorkspace();
   const locale = (await readLocaleCookie()) ?? state.settings.locale;
   const copy = copyOf(locale);
   const today = klDateISO();

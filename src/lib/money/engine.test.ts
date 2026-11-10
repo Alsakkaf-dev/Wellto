@@ -8,6 +8,7 @@ import {
   importHistory,
   latestPlan,
   moveBetween,
+  runAutomations,
   stageIncome,
   topUp,
   undoLast,
@@ -71,6 +72,17 @@ describe("engine morning", () => {
     expect(plan?.emergencyRate).toBeCloseTo(0.85, 5);
     expect(plan?.anomaly).toBeNull();
     expect(plan?.learned).toBe("hotter");
+  });
+
+  it("leaves today's plan untouched when the morning is opened again", () => {
+    let state = freshState();
+    state.setupComplete = true;
+    state = computeMorning(state, "2026-11-11", "2026-11-11T00:05:00.000Z");
+    const again = computeMorning(state, "2026-11-11", "2026-11-11T08:00:00.000Z");
+    expect(again).toBe(state);
+    expect(latestPlan(again, "2026-11-11")?.computedAt).toBe("2026-11-11T00:05:00.000Z");
+    const later = runAutomations(again, new Date("2026-11-11T04:00:00+08:00"));
+    expect(later).toBe(again);
   });
 
   it("does not invent a top-up for a missed day, and daily spending can go negative", () => {

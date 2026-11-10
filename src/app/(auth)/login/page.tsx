@@ -4,6 +4,7 @@ import { hasSession, readLocaleCookie } from "@/server/auth";
 import { readWorkspace } from "@/server/store";
 
 export const dynamic = "force-dynamic";
+export const preferredRegion = "sin1";
 
 export default async function LoginPage() {
   const state = await readWorkspace();

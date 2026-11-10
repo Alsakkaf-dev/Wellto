@@ -4,6 +4,7 @@ import { klDateISO } from "@/lib/money/time";
 import { mutate } from "@/server/store";
 
 export const dynamic = "force-dynamic";
+export const preferredRegion = "sin1";
 
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;

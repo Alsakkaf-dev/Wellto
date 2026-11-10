@@ -44,7 +44,7 @@ Locally, if `AUTH_SECRET` is missing, a dev secret is written to `.data/dev-secr
 
 ## Database
 
-Neon is the intended host (Vercel Marketplace → Neon, or [neon.tech](https://neon.tech)). Paste the pooled connection string into `DATABASE_URL`.
+Neon is the intended host (Vercel Marketplace → Neon, or [neon.tech](https://neon.tech)). Paste the pooled connection string into `DATABASE_URL` (the host contains `-pooler`). Keep `DATABASE_URL_UNPOOLED` for migrations only. Functions are pinned to Singapore (`sin1` in `vercel.json`) so they sit next to that database.
 
 One row holds the whole wallet as JSON, plus a version used so two saves cannot overwrite each other. Every balance change keeps an undo frame and an audit line. Undo is on the History screen.
 
@@ -52,7 +52,7 @@ There is also **Download a backup** / **Restore a backup** under Settings. The b
 
 ## The clock
 
-Opening the app runs anything that is due, so a phone is enough before hosting is wired up. On Vercel, `vercel.json` calls `GET /api/cron` in UTC, which is Malaysia time (UTC+8, no daylight saving):
+Opening the app runs a scheduled job only when that job is actually due, so a phone is enough before hosting is wired up. On Vercel, `vercel.json` calls `GET /api/cron` in UTC, which is Malaysia time (UTC+8, no daylight saving):
 
 | Job | UTC | Malaysia |
 | --- | --- | --- |

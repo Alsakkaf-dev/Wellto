@@ -1,12 +1,13 @@
 import { SettingsDesk } from "@/components/SettingsDesk";
 import { copyOf } from "@/lib/copy";
 import { readLocaleCookie } from "@/server/auth";
-import { logoutAction, prepareWorkspace } from "@/server/actions";
+import { logoutAction } from "@/server/actions";
+import { loadWorkspace } from "@/server/store";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const state = await prepareWorkspace();
+  const state = await loadWorkspace();
   const locale = (await readLocaleCookie()) ?? state.settings.locale;
   const copy = copyOf(locale);
   return (

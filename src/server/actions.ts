@@ -23,7 +23,7 @@ import { klDateISO } from "@/lib/money/time";
 import type { Box, ExpenseCategory } from "@/lib/money/types";
 import { parseRm } from "@/lib/format";
 import { clearSession, envPin, hasSession, hashPin, pinAccepted, writeLocaleCookie, writeSession } from "@/server/auth";
-import { loadWorkspace, mutate, readWorkspace } from "@/server/store";
+import { mutate, readWorkspace } from "@/server/store";
 
 function refresh() {
   revalidatePath("/", "layout");
@@ -314,10 +314,6 @@ export async function dropBuyAction(id: string): Promise<void> {
   await requireSession();
   await mutate((state) => dropWaitingBuy(state, id));
   refresh();
-}
-
-export async function prepareWorkspace() {
-  return loadWorkspace();
 }
 
 export async function confirmForm(id: string): Promise<void> {

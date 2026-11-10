@@ -1,14 +1,18 @@
 import type { Metadata, Viewport } from "next";
+
+export const preferredRegion = "sin1";
 import { Fraunces, IBM_Plex_Sans_Arabic, Outfit } from "next/font/google";
 import { readLocaleCookie } from "@/server/auth";
 import "./globals.css";
 
-const sans = Outfit({ subsets: ["latin"], variable: "--font-sans" });
-const display = Fraunces({ subsets: ["latin"], variable: "--font-display" });
+const sans = Outfit({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const display = Fraunces({ subsets: ["latin"], variable: "--font-display", display: "swap" });
 const arabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["400", "500", "600"],
   variable: "--font-arabic",
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -43,7 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   }
   return (
     <html lang={locale === "ar" ? "ar" : "en"} dir={locale === "ar" ? "rtl" : "ltr"} className="light">
-      <body className={`${sans.variable} ${display.variable} ${arabic.variable} ${locale === "ar" ? "font-arabic" : "font-sans"} antialiased`}>
+      <body className={`${sans.variable} ${display.variable} ${locale === "ar" ? `${arabic.variable} font-arabic` : "font-sans"} antialiased`}>
         {children}
       </body>
     </html>

@@ -31,6 +31,7 @@ export function Shell({ locale, children }: { locale: Locale; children: ReactNod
               <Link
                 key={link.href}
                 href={link.href}
+                prefetch
                 className={`rounded-2xl px-3 py-2.5 text-[15px] ${active ? "bg-moss text-white" : "text-ink hover:bg-white"}`}
               >
                 {copy[link.key]}
@@ -53,6 +54,7 @@ export function Shell({ locale, children }: { locale: Locale; children: ReactNod
               <li key={link.href}>
                 <Link
                   href={link.href}
+                  prefetch
                   className={`flex flex-col items-center gap-0.5 rounded-xl py-2 text-[11px] ${active ? "text-moss" : "text-muted"}`}
                 >
                   <span className={`h-1 w-1 rounded-full ${active ? "bg-moss" : "bg-transparent"}`} />

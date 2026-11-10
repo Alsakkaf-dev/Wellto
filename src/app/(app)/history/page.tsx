@@ -1,13 +1,15 @@
+import { SubmitButton } from "@/components/SubmitButton";
 import { categoryLabel, copyOf } from "@/lib/copy";
 import { formatDay, formatRm } from "@/lib/format";
 import type { ExpenseCategory } from "@/lib/money/types";
 import { readLocaleCookie } from "@/server/auth";
-import { prepareWorkspace, undoForm } from "@/server/actions";
+import { undoForm } from "@/server/actions";
+import { loadWorkspace } from "@/server/store";
 
 export const dynamic = "force-dynamic";
 
 export default async function HistoryPage() {
-  const state = await prepareWorkspace();
+  const state = await loadWorkspace();
   const locale = (await readLocaleCookie()) ?? state.settings.locale;
   const copy = copyOf(locale);
   const rows = state.transactions.filter((tx) => tx.amount > 0).slice(0, 200);
@@ -16,7 +18,7 @@ export default async function HistoryPage() {
       <div className="flex items-end justify-between gap-3">
         <h1 className="num text-4xl italic">{copy.history}</h1>
         <form action={undoForm}>
-          <button className="rounded-full border border-line bg-white px-4 py-2 text-sm">{copy.undo}</button>
+          <SubmitButton className="rounded-full border border-line bg-white px-4 py-2 text-sm">{copy.undo}</SubmitButton>
         </form>
       </div>
       {rows.length === 0 ? <p className="mt-8 text-muted">{copy.historyEmpty}</p> : null}

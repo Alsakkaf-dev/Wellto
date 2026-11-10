@@ -1,6 +1,7 @@
 import "server-only";
 
 import { neon } from "@neondatabase/serverless";
+import { cache } from "react";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { freshState, runAutomations } from "@/lib/money/engine";
@@ -14,6 +15,9 @@ interface Envelope {
 const FILE = process.env.DATA_FILE || path.join(process.cwd(), ".data", "mahfaza.json");
 
 let chain: Promise<unknown> = Promise.resolve();
+let tableReady = false;
+type Sql = ReturnType<typeof neon<false, false>>;
+let pooled: Sql | null = null;
 
 function emptyEnvelope(): Envelope {
   return { version: 1, state: freshState() };
@@ -35,19 +39,22 @@ async function writeFileEnvelope(envelope: Envelope): Promise<void> {
   await writeFile(FILE, JSON.stringify(envelope), "utf8");
 }
 
-function sqlClient() {
+function sqlClient(): Sql | null {
   const url = process.env.DATABASE_URL;
   if (!url) return null;
-  return neon(url);
+  if (!pooled) pooled = neon(url);
+  return pooled;
 }
 
-async function ensureTable(sql: ReturnType<typeof neon<false, false>>): Promise<void> {
+async function ensureTable(sql: Sql): Promise<void> {
+  if (tableReady) return;
   await sql`create table if not exists mahfaza_state (
     id text primary key,
     version integer not null,
     document jsonb not null,
     updated_at timestamptz not null default now()
   )`;
+  tableReady = true;
 }
 
 async function readEnvelope(): Promise<Envelope> {
@@ -85,7 +92,7 @@ export async function mutate(change: (state: AppState) => AppState): Promise<App
     for (let attempt = 0; attempt < 4; attempt += 1) {
       const current = await readEnvelope();
       const nextState = change(current.state);
-      if (JSON.stringify(nextState) === JSON.stringify(current.state)) return current.state;
+      if (nextState === current.state || JSON.stringify(nextState) === JSON.stringify(current.state)) return current.state;
       const saved = await writeEnvelope(current.version, { version: current.version + 1, state: nextState });
       if (saved) return nextState;
     }
@@ -98,9 +105,10 @@ export async function mutate(change: (state: AppState) => AppState): Promise<App
   return job;
 }
 
-export async function loadWorkspace(now = new Date()): Promise<AppState> {
-  return mutate((state) => runAutomations(state, now));
-}
+/** One database read per navigation. Repeated calls in the same render share it. */
+export const loadWorkspace = cache(async (): Promise<AppState> => {
+  return mutate((state) => runAutomations(state));
+});
 
 export async function readWorkspace(): Promise<AppState> {
   return (await readEnvelope()).state;

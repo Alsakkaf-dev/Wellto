@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import { Shell } from "@/components/Shell";
 import { hasSession, readLocaleCookie } from "@/server/auth";
-import { prepareWorkspace } from "@/server/actions";
+import { loadWorkspace } from "@/server/store";
 
 export const dynamic = "force-dynamic";
+export const preferredRegion = "sin1";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const state = await prepareWorkspace();
+  const state = await loadWorkspace();
   if (!state.setupComplete) redirect("/setup");
   if (!(await hasSession())) redirect("/login");
   const locale = (await readLocaleCookie()) ?? state.settings.locale;
